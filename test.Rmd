@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r}
-rmarkdown::render("README.Rmd")
+rmarkdown::render("test.md","github_document",output_file = "README.md")
 ```
 
 ## R Markdown
