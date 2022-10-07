@@ -1,0 +1,45 @@
+---
+title: "Untitled"
+author: "Chuanni He"
+date: "2022-10-03"
+---
+
+
+```{r message=FALSE, warning=FALSE}
+# Required library and key information
+key = "EByG3OEye377G2rI0LRah2CUjGplA7TB"
+library(httr)
+library(jsonlite)
+```
+
+
+Develop our first function to obtain the aggregate bars for a stock over a given date range in custom time window sizes.
+```{r}
+# timespan = (munite,hour,day,week,month,quarter,year)
+Aggregates = function(stock,multiplier, timespan) {
+  base = "https://api.polygon.io/v2/aggs/"
+  Endpoint = "ticker"
+  stock = toupper(stock)
+  call = paste(base,Endpoint,"/",stock,"/range/",multiplier,"/",timespan,
+               "/2021-07-22/2022-07-22?adjusted=true&sort=asc&limit=200&apiKey=",
+               key, sep = "")
+  
+  get = GET(call)
+  content = content(get)
+  return(content)
+}
+
+stock = "aapl"
+multiplier = 1
+timespan = "day"
+content = Aggregates(stock,multiplier,timespan)
+```
+
+
+
+```{r}
+for (i in 1:length(content$results)) {
+  print(content$results[[i]]$c)
+}
+```
+
