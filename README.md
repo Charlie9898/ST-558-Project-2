@@ -1,7 +1,22 @@
-Untitled
+Project2
 ================
 Chuanni He
 2022-10-03
+
+# Backgroun Information
+
+This project is prepared by Aniket Anil Walimbe and Chuanni He. It
+created a vignette for reading and summarizing data from one of the
+[Financial data API](https://polygon.io/docs/getting-started).
+
+# Requirements
+
+To use the functions for interacting with the Financial API, We used the
+following packages:  
+\* `httr`: Tools for Working with URLs and HTTP \* `jsonlite`: A JSON
+parser/generator optimized for the web. Its main strength is that it
+implements a bidirectional mapping between JSON data and the most
+important R data types.
 
 ``` r
 # Required library and key information
@@ -10,11 +25,19 @@ library(httr)
 library(jsonlite)
 ```
 
-Develop our first function to obtain the aggregate bars for a stock over
-a given date range in custom time window sizes.
+# API Interaction Functions
+
+This section talks about how we define the functions to interact with
+the Financial API, as well as some helper functions working with data
+manipulation.
+
+`Aggregates`
+
+Our first function is to obtain the aggregate bars for a stock over a
+given date range in custom time window sizes.
 
 ``` r
-# timespan = (munite,hour,day,week,month,quarter,year)
+# timespan = (minute,hour,day,week,month,quarter,year)
 Aggregates = function(stock,multiplier, timespan) {
   base = "https://api.polygon.io/v2/aggs/"
   Endpoint = "ticker"

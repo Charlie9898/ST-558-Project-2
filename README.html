@@ -601,15 +601,31 @@ padding-top: 0px;
 
 <body>
 
-<h1 id="untitled">Untitled</h1>
+<h1 id="project2">Project2</h1>
 <p>Chuanni He 2022-10-03</p>
+<h1 id="backgroun-information">Backgroun Information</h1>
+<p>This project is prepared by Aniket Anil Walimbe and Chuanni He. It
+created a vignette for reading and summarizing data from one of the <a href="https://polygon.io/docs/getting-started">Financial data
+API</a>.</p>
+<h1 id="requirements">Requirements</h1>
+<p>To use the functions for interacting with the Financial API, We used
+the following packages:<br />
+* <code>httr</code>: Tools for Working with URLs and HTTP *
+<code>jsonlite</code>: A JSON parser/generator optimized for the web.
+Its main strength is that it implements a bidirectional mapping between
+JSON data and the most important R data types.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Required library and key information</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>key <span class="ot">=</span> <span class="st">&quot;EByG3OEye377G2rI0LRah2CUjGplA7TB&quot;</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(httr)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jsonlite)</span></code></pre></div>
-<p>Develop our first function to obtain the aggregate bars for a stock
-over a given date range in custom time window sizes.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># timespan = (munite,hour,day,week,month,quarter,year)</span></span>
+<h1 id="api-interaction-functions">API Interaction Functions</h1>
+<p>This section talks about how we define the functions to interact with
+the Financial API, as well as some helper functions working with data
+manipulation.</p>
+<p><code>Aggregates</code></p>
+<p>Our first function is to obtain the aggregate bars for a stock over a
+given date range in custom time window sizes.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># timespan = (minute,hour,day,week,month,quarter,year)</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>Aggregates <span class="ot">=</span> <span class="cf">function</span>(stock,multiplier, timespan) {</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  base <span class="ot">=</span> <span class="st">&quot;https://api.polygon.io/v2/aggs/&quot;</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  Endpoint <span class="ot">=</span> <span class="st">&quot;ticker&quot;</span></span>
