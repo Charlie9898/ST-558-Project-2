@@ -624,25 +624,40 @@ the Financial API, as well as some helper functions working with data
 manipulation.</p>
 <p><code>Aggregates</code></p>
 <p>Our first function is to obtain the aggregate bars for a stock over a
-given date range in custom time window sizes.</p>
+given date range in custom time window sizes. This function interacts
+with the <code>Aggregates (Bars)</code> endpoint of the API.
+<code>stock</code> parameter refers to the ticker of the referred
+company. For example, the stock ticker for Apple Inc. is
+<code>AAPL</code>. Either lower-case or capital letters are acceptable.
+The second parameter <code>multiplier</code> refers to the time
+multiplier for the acquired data. For example, if the
+<code>timespan</code> is <code>day</code>, then <code>multiplier</code>
+of <code>5</code> indicates that 5-minute bars will be obtained.
+<code>multiplier</code> should be integer values. The last parameter
+<code>timespan</code> refers to the size of the time window. The
+possible values are <code>minute</code>, <code>hour</code>,
+<code>day</code>, <code>week</code>, <code>month</code>,
+<code>quarter</code>, <code>year</code>. Either lower-case or capital
+letters are acceptable.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># timespan = (minute,hour,day,week,month,quarter,year)</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>Aggregates <span class="ot">=</span> <span class="cf">function</span>(stock,multiplier, timespan) {</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  base <span class="ot">=</span> <span class="st">&quot;https://api.polygon.io/v2/aggs/&quot;</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  Endpoint <span class="ot">=</span> <span class="st">&quot;ticker&quot;</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  stock <span class="ot">=</span> <span class="fu">toupper</span>(stock)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  call <span class="ot">=</span> <span class="fu">paste</span>(base,Endpoint,<span class="st">&quot;/&quot;</span>,stock,<span class="st">&quot;/range/&quot;</span>,multiplier,<span class="st">&quot;/&quot;</span>,timespan,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;/2021-07-22/2022-07-22?adjusted=true&amp;sort=asc&amp;limit=200&amp;apiKey=&quot;</span>,</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>               key, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  get <span class="ot">=</span> <span class="fu">GET</span>(call)</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  content <span class="ot">=</span> <span class="fu">content</span>(get)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(content)</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>stock <span class="ot">=</span> <span class="st">&quot;aapl&quot;</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>multiplier <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>timespan <span class="ot">=</span> <span class="st">&quot;day&quot;</span></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>content <span class="ot">=</span> <span class="fu">Aggregates</span>(stock,multiplier,timespan)</span></code></pre></div>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  timespan <span class="ot">=</span> <span class="fu">tolower</span>(timespan)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  call <span class="ot">=</span> <span class="fu">paste</span>(base,Endpoint,<span class="st">&quot;/&quot;</span>,stock,<span class="st">&quot;/range/&quot;</span>,multiplier,<span class="st">&quot;/&quot;</span>,timespan,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;/2021-07-22/2022-07-22?adjusted=true&amp;sort=asc&amp;limit=200&amp;apiKey=&quot;</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>               key, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  get <span class="ot">=</span> <span class="fu">GET</span>(call)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  content <span class="ot">=</span> <span class="fu">content</span>(get)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(content)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>stock <span class="ot">=</span> <span class="st">&quot;aapl&quot;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>multiplier <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>timespan <span class="ot">=</span> <span class="st">&quot;day&quot;</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>content <span class="ot">=</span> <span class="fu">Aggregates</span>(stock,multiplier,timespan)</span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(content<span class="sc">$</span>results)) {</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(content<span class="sc">$</span>results[[i]]<span class="sc">$</span>c)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>

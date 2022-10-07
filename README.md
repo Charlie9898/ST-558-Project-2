@@ -34,7 +34,17 @@ manipulation.
 `Aggregates`
 
 Our first function is to obtain the aggregate bars for a stock over a
-given date range in custom time window sizes.
+given date range in custom time window sizes. This function interacts
+with the `Aggregates (Bars)` endpoint of the API. `stock` parameter
+refers to the ticker of the referred company. For example, the stock
+ticker for Apple Inc. is `AAPL`. Either lower-case or capital letters
+are acceptable. The second parameter `multiplier` refers to the time
+multiplier for the acquired data. For example, if the `timespan` is
+`day`, then `multiplier` of `5` indicates that 5-minute bars will be
+obtained. `multiplier` should be integer values. The last parameter
+`timespan` refers to the size of the time window. The possible values
+are `minute`, `hour`, `day`, `week`, `month`, `quarter`, `year`. Either
+lower-case or capital letters are acceptable.
 
 ``` r
 # timespan = (minute,hour,day,week,month,quarter,year)
@@ -42,6 +52,7 @@ Aggregates = function(stock,multiplier, timespan) {
   base = "https://api.polygon.io/v2/aggs/"
   Endpoint = "ticker"
   stock = toupper(stock)
+  timespan = tolower(timespan)
   call = paste(base,Endpoint,"/",stock,"/range/",multiplier,"/",timespan,
                "/2021-07-22/2022-07-22?adjusted=true&sort=asc&limit=200&apiKey=",
                key, sep = "")
