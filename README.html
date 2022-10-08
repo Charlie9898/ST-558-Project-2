@@ -587,12 +587,12 @@ code .in { color: #008080; }
 </style>
 <style>
 body {
-box-sizing: border-box;
-min-width: 200px;
-max-width: 980px;
-margin: 0 auto;
-padding: 45px;
-padding-top: 0px;
+  box-sizing: border-box;
+  min-width: 200px;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 45px;
+  padding-top: 0px;
 }
 </style>
 
@@ -610,20 +610,23 @@ API</a>.</p>
 <h1 id="requirements">Requirements</h1>
 <p>To use the functions for interacting with the Financial API, We used
 the following packages:<br />
-* <code>httr</code>: Tools for Working with URLs and HTTP *
-<code>jsonlite</code>: A JSON parser/generator optimized for the web.
+* <code>httr</code>: Tools for Working with URLs and HTTP.<br />
+* <code>jsonlite</code>: A JSON parser/generator optimized for the web.
 Its main strength is that it implements a bidirectional mapping between
-JSON data and the most important R data types.</p>
+JSON data and the most important R data types.<br />
+* <code>ggplot2</code>: A system for declaratively creating graphics,
+based on The Grammar of Graphics.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Required library and key information</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>key <span class="ot">=</span> <span class="st">&quot;EByG3OEye377G2rI0LRah2CUjGplA7TB&quot;</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(httr)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jsonlite)</span></code></pre></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jsonlite)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div>
 <h1 id="api-interaction-functions">API Interaction Functions</h1>
 <p>This section talks about how we define the functions to interact with
 the Financial API, as well as some helper functions working with data
 manipulation.</p>
 <p><code>Aggregates</code></p>
-<p>Our first function is to obtain the highest price for a stock over a
+<p>Our first function is to obtain the stock price for a stock over a
 given date range in custom time window sizes. This function interacts
 with the <code>Aggregates (Bars)</code> endpoint of the API.
 <code>stock</code> parameter refers to the ticker of the referred
@@ -641,45 +644,25 @@ possible values are <code>minute</code>, <code>hour</code>,
 letters are acceptable. This function will return the close price in the
 given time period between 2021-7-22 to 2022-7-22 with a maximum data
 length of 200 records. The returned data type is data frame.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Aggregates <span class="ot">=</span> <span class="cf">function</span>(stock,multiplier, timespan) {</span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Aggregates <span class="ot">=</span> <span class="cf">function</span>(ticker,multiplier, timespan) {</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># generate the URL</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  base <span class="ot">=</span> <span class="st">&quot;https://api.polygon.io/v2/aggs/&quot;</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  Endpoint <span class="ot">=</span> <span class="st">&quot;ticker&quot;</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  stock <span class="ot">=</span> <span class="fu">toupper</span>(stock)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  ticker <span class="ot">=</span> <span class="fu">toupper</span>(ticker)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  timespan <span class="ot">=</span> <span class="fu">tolower</span>(timespan)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  call <span class="ot">=</span> <span class="fu">paste</span>(base,Endpoint,<span class="st">&quot;/&quot;</span>,stock,<span class="st">&quot;/range/&quot;</span>,multiplier,<span class="st">&quot;/&quot;</span>,timespan,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  call <span class="ot">=</span> <span class="fu">paste</span>(base,Endpoint,<span class="st">&quot;/&quot;</span>,ticker,<span class="st">&quot;/range/&quot;</span>,multiplier,<span class="st">&quot;/&quot;</span>,timespan,</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;/2021-07-22/2022-07-22?adjusted=true&amp;sort=asc&amp;limit=200&amp;apiKey=&quot;</span>,</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>               key, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Acquire the data</span></span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  get <span class="ot">=</span> <span class="fu">GET</span>(call)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  content <span class="ot">=</span> <span class="fu">content</span>(get)</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># store and return the data</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  price <span class="ot">=</span> <span class="fu">data.frame</span>()</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="do">## the close price</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  close <span class="ot">=</span> <span class="fu">c</span>()</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(content<span class="sc">$</span>results)) {</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    close <span class="ot">=</span> <span class="fu">rbind</span>(close,content<span class="sc">$</span>results[[i]]<span class="sc">$</span>c)</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="do">## the highest price</span></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  highest <span class="ot">=</span> <span class="fu">c</span>()</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(content<span class="sc">$</span>results)) {</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    highest <span class="ot">=</span> <span class="fu">rbind</span>(highest,content<span class="sc">$</span>results[[i]]<span class="sc">$</span>h)</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  <span class="do">## the lowest price</span></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  lowest <span class="ot">=</span> <span class="fu">c</span>()</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(content<span class="sc">$</span>results)) {</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    lowest <span class="ot">=</span> <span class="fu">rbind</span>(lowest,content<span class="sc">$</span>results[[i]]<span class="sc">$</span>l)</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="do">## the open price</span></span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  open <span class="ot">=</span> <span class="fu">c</span>()</span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(content<span class="sc">$</span>results)) {</span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    open <span class="ot">=</span> <span class="fu">rbind</span>(open,content<span class="sc">$</span>results[[i]]<span class="sc">$</span>o)</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Aggregate data into data frame</span></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  price <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">open =</span> open, <span class="at">close =</span> close, <span class="at">highest =</span> highest, <span class="at">lowest =</span> lowest)</span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(price)</span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  parsed <span class="ot">=</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(get<span class="sc">$</span>content))</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  result <span class="ot">=</span> parsed<span class="sc">$</span>results</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(result) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;TradingVolumn&quot;</span>, <span class="st">&quot;VolumnWeightedAverage&quot;</span>, </span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&quot;OpenPrice&quot;</span>,<span class="st">&quot;ClosePrice&quot;</span>, <span class="st">&quot;HighestPrice&quot;</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&quot;LowestPrice&quot;</span>,<span class="st">&quot;Timestamp&quot;</span>,<span class="st">&quot;Transactions&quot;</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(result)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p><code>GetNews</code></p>
 <p>The second function acquires the most recent news articles relating
 to a stock ticker. The summary of the article and the link to the
@@ -702,31 +685,28 @@ keywords, etc.</p>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;&amp;limit=&quot;</span>,limit, <span class="st">&quot;&amp;apiKey=&quot;</span>, key, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Acquire the data</span></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  get <span class="ot">=</span> <span class="fu">GET</span>(call)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  content <span class="ot">=</span> <span class="fu">content</span>(get)</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(content<span class="sc">$</span>results)</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<p><code>Detail</code></p>
-<p>The third function gets a single ticker supported by Polygon.io. This
-response will have detailed information about the ticker and the company
-behind it.############</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Detail <span class="ot">=</span> <span class="cf">function</span>(ticker,date) {</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  ticker <span class="ot">=</span> <span class="fu">toupper</span>(ticker)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># generate the URL</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  base <span class="ot">=</span> <span class="st">&quot;https://api.polygon.io/v3/&quot;</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  Endpoint <span class="ot">=</span> <span class="st">&quot;reference&quot;</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  call <span class="ot">=</span> <span class="fu">paste</span>(base,Endpoint,<span class="st">&quot;/tickers/&quot;</span>,ticker,<span class="st">&quot;?date=&quot;</span>,date, </span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;&amp;apiKey=&quot;</span>, key, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Acquire the data</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  get <span class="ot">=</span> <span class="fu">GET</span>(call)</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  content <span class="ot">=</span> <span class="fu">content</span>(get)</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(content<span class="sc">$</span>results)</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>stock <span class="ot">=</span> <span class="st">&quot;aapl&quot;</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>multiplier <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>timespan <span class="ot">=</span> <span class="st">&quot;day&quot;</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">Aggregates</span>(stock,multiplier,timespan)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>news <span class="ot">=</span> <span class="fu">GetNews</span>(stock,<span class="st">&quot;2021-07-01&quot;</span>,<span class="dv">10</span>)</span></code></pre></div>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  parsed <span class="ot">=</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(get<span class="sc">$</span>content))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># We removed the publisher information</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  result <span class="ot">=</span> parsed<span class="sc">$</span>results[,<span class="sc">-</span><span class="dv">2</span>]</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(result)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h1 id="data-exploration">Data Exploration</h1>
+<p>Now that we can interact with a few of the endpoints of the Financial
+API, let’s get some data from them.<br />
+First, let’s pull the stock price of Apple Inc. (the ticker is
+<code>AAPL</code>) and Amazon.com Inc. (the ticker is <code>AMZN</code>)
+during 2021-7-22 and 2022-7-22. We set the timeframe as 1 day
+(<code>multiplier=1</code>, <code>timespan=&quot;day&quot;</code>), then, we call
+the function <code>Aggregates(&quot;aapl&quot;, 1, &quot;day&quot;)</code> and
+<code>Aggregates(&quot;amzn&quot;, 1, &quot;day&quot;)</code>. Then combine them together by
+adding a <code>Company</code> variable.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Price_Apple <span class="ot">=</span> <span class="fu">Aggregates</span>(<span class="st">&quot;aapl&quot;</span>, <span class="dv">1</span>, <span class="st">&quot;day&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>Price_Amazon <span class="ot">=</span> <span class="fu">Aggregates</span>(<span class="st">&quot;amzn&quot;</span>, <span class="dv">1</span>, <span class="st">&quot;day&quot;</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>Price_Apple <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">Company=</span><span class="st">&quot;Apple&quot;</span>,Price_Apple)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>Price_Amazon <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">Company=</span><span class="st">&quot;Amazon&quot;</span>,Price_Amazon)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>Price <span class="ot">=</span> <span class="fu">rbind</span>(Price_Apple,Price_Amazon)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>News <span class="ot">=</span> <span class="fu">GetNews</span>(<span class="st">&quot;aapl&quot;</span>,<span class="st">&quot;2021-07-01&quot;</span>,<span class="dv">10</span>)</span></code></pre></div>
 
 </body>
 </html>
