@@ -81,7 +81,7 @@ Price_Amazon = Aggregates("amzn", 1, "day")
 Price_Apple = data.frame(Company="Apple",Price_Apple)
 Price_Amazon = data.frame(Company="Amazon",Price_Amazon)
 Price = rbind(Price_Apple,Price_Amazon)
-Price
+head(Price)
 ```
 Plots
 You should pull data from at least two calls to your obtaining data function (possibly combining them into one)
@@ -115,7 +115,7 @@ g + geom_histogram()
 
 ```{r}
 News = GetNews("aapl","2021-07-01",10)
-News
+head(News)
 ```
 Plots : 
 
