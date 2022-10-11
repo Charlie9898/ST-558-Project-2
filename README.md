@@ -153,7 +153,7 @@ ggplot(data = Price, aes(x = Timestamp, y = OpenPrice)) +
 geom_line(aes(color = Company))
 ```
 
-![](C:\Users\hechu\OneDrive\Courses\ST%20558\Project\Project%202\ST-558-Project-2\README_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
+![](C:\Users\hechu\OneDrive\Courses\ST558~1\Project\PROJEC~2\ST-558~1\README~1/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 You should create at least one new variable that is a function of other
 variables : Here, we have created a new variable “PriceVariation” which
 is the difference between the highest and lowest price of the stocks of
@@ -170,7 +170,7 @@ ggplot(data = priceUpdated, aes(x = Timestamp, y = PriceVariation)) +
   geom_col()
 ```
 
-![](C:\Users\hechu\OneDrive\Courses\ST%20558\Project\Project%202\ST-558-Project-2\README_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
+![](C:\Users\hechu\OneDrive\Courses\ST558~1\Project\PROJEC~2\ST-558~1\README~1/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ``` r
 g <- ggplot(data = Price_Apple, aes(x = OpenPrice))
@@ -179,7 +179,7 @@ g + geom_histogram()
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](C:\Users\hechu\OneDrive\Courses\ST%20558\Project\Project%202\ST-558-Project-2\README_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
+![](C:\Users\hechu\OneDrive\Courses\ST558~1\Project\PROJEC~2\ST-558~1\README~1/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 Next, let’s create some contingency tables to summarize the key words
 for different types of companies in the news. We are interested in the
@@ -226,19 +226,25 @@ table(wordcount_AAPL)
 table(wordcount_AMZN)
 ```
 
-    ## < table of extent 0 >
+    ## wordcount_AMZN
+    ##  eurozone investing   markets      tech 
+    ##         1       188        61        25
 
 ``` r
 table(wordcount_JPM)
 ```
 
-    ## < table of extent 0 >
+    ## wordcount_JPM
+    ##  eurozone investing   markets      tech 
+    ##         4       122        26         4
 
 ``` r
 table(wordcount_WFC)
 ```
 
-    ## < table of extent 0 >
+    ## wordcount_WFC
+    ##  eurozone investing   markets      tech 
+    ##         3       129        28         3
 
 It can be seen that there is a clear association between the keywords
 and company types. Two technical companies all includes keyword of
