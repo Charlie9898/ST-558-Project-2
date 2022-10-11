@@ -19,6 +19,7 @@ key = "EByG3OEye377G2rI0LRah2CUjGplA7TB"
 library(httr)
 library(jsonlite)
 library(ggplot2)
+library(tidyverse)
 ```
 
 # API Interaction Functions
@@ -80,6 +81,33 @@ Price_Amazon = Aggregates("amzn", 1, "day")
 Price_Apple = data.frame(Company="Apple",Price_Apple)
 Price_Amazon = data.frame(Company="Amazon",Price_Amazon)
 Price = rbind(Price_Apple,Price_Amazon)
+Price
+```
+Plots
+You should pull data from at least two calls to your obtaining data function (possibly combining them into one)
+We have called the function twice to obtain the data for Apple and Amazon companies. We have then plotted the opening price for the stocks against the timestamp for doing various analysis like identifying the trends etc.
+
+```{r}
+ggplot(data = Price, aes(x = Timestamp, y = OpenPrice)) +
+geom_line(aes(color = Company))
+
+```
+You should create at least one new variable that is a function of other variables :
+Here, we have created a new variable "PriceVariation" which is the difference between the highest and lowest price of the stocks of a company per day. This variation is then plotted against the timestamp and following graph is obtaine. 
+
+```{r}
+priceUpdated <- Price %>%
+  filter(Company == "Apple") %>%
+  mutate(PriceVariation = (HighestPrice-LowestPrice)) %>%
+  arrange(desc(PriceVariation))
+
+ggplot(data = priceUpdated, aes(x = Timestamp, y = PriceVariation)) +
+  geom_col()
+```
+
+```{r}
+g <- ggplot(data = Price_Apple, aes(x = OpenPrice))
+g + geom_histogram()
 ```
 
 
@@ -87,5 +115,11 @@ Price = rbind(Price_Apple,Price_Amazon)
 
 ```{r}
 News = GetNews("aapl","2021-07-01",10)
+News
+```
+Plots : 
+
+```{r}
+
 ```
 
