@@ -52,14 +52,14 @@ Aggregates = function(ticker,multiplier, timespan) {
 
 `GetNews`  
 
-The second function acquires the most recent news articles relating to a stock ticker. The summary of the article and the link to the original article are also included. Three parameters are included in this function. The `ticker` is the stock ticker of the company. Either lower-case or capital letters are acceptable. The `published` parameter refers to the date on witch the news is published. The data type is string and the format should be `yyyy-mm-dd`. The third parameter y`limit` limits the number of news will be returned from the function. The data type is integer. This function returns a structured list including multiple information regarding each news such as publisher, author, title, keywords, etc.
+The second function acquires the most recent news articles relating to a stock ticker. The summary of the article and the link to the original article are also included. Three parameters are included in this function. The `ticker` is the stock ticker of the company. Either lower-case or capital letters are acceptable. The `published` parameter refers to the date on witch the news is published greater than the specified value. The data type is string and the format should be `yyyy-mm-dd`. The third parameter y`limit` limits the number of news will be returned from the function. The data type is integer. This function returns a structured list including multiple information regarding each news such as publisher, author, title, keywords, etc.
 ```{r}
 GetNews = function(ticker, published, limit) {
   ticker = toupper(ticker)
   # generate the URL
   base = "https://api.polygon.io/v2/reference/"
   Endpoint = "news"
-  call = paste(base,Endpoint,"?ticker=",ticker,"&published_utc=",published,
+  call = paste(base,Endpoint,"?ticker=",ticker,"&published_utc.gt=",published,
                "&limit=",limit, "&apiKey=", key, sep = "")
   # Acquire the data
   get = GET(call)
@@ -112,14 +112,34 @@ g + geom_histogram()
 
 
 
+Next, let's create some contingency tables to summarize the key words for different types of companies in the news. We are interested in the key words in news for two types of companies: technology company and finance company. We selected `AAPL` and `AMZN` as technical company samples,  `JPM` and `WFC` as financial company samples. 
+```{r}
+News_AAPL = GetNews("aapl","2021-07-01",500)
+wordvec_AAPL = tolower(unlist(News_AAPL$keywords))
+
+News_AMZN = GetNews("amzn","2021-07-01",500)
+wordvec_AMZN = tolower(unlist(News_AMZN$keywords))
+
+News_JPM = GetNews("jpm","2021-07-01",500)
+wordvec_JPM = tolower(unlist(News_JPM$keywords))
+
+News_WFC = GetNews("wfc","2021-07-01",500)
+worvec_WFC = tolower(unlist(News_WFC$keywords))
+
+```
+We grabbed the keywords in the first 500 news of the corresponding companies from 2021-07-01, save it as a string vector. Then we want to search for the keywords of `tech`, `investing`, and `markets` in the news from the four companies. We first create a `keywords` vector to save the word list. Next we search for the keywords in the corresponding string vectors, and create four contingency tables accordingly.
 
 ```{r}
-News = GetNews("aapl","2021-07-01",10)
-head(News)
+
+keywords = c("tech", "investing","markets","eurozone")
+wordcount_AAPL = wordvec_AAPL[wordvec_AAPL %in% keywords]
+wordcount_AMZN = wordvec_AMZN[wordvec_AMZN %in% keywords]
+wordcount_JPM = wordvec_JPM[wordvec_JPM %in% keywords]
+wordcount_WFC = worvec_WFC[worvec_WFC %in% keywords]
+
+table(wordcount_AAPL)
+table(wordcount_AMZN)
+table(wordcount_JPM)
+table(wordcount_WFC)
 ```
-Plots : 
-
-```{r}
-
-```
-
+It can be seen that there is a clear association between the keywords and company types. Two technical companies all includes keyword of `tech`, while either of the financial companies has fewer frequency of `tech`. On the other hand, financial terminology such as `eurozone` has higher frequencies in financial companies.
