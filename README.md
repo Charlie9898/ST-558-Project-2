@@ -127,20 +127,13 @@ Price = rbind(Price_Apple,Price_Amazon)
 head(Price)
 ```
 
-    ##   Company TradingVolumn VolumnWeightedAverage OpenPrice ClosePrice HighestPrice
-    ## 1   Apple      77287356              146.9910   145.935     146.80     148.1950
-    ## 2   Apple      71447416              148.0368   147.550     148.56     148.7177
-    ## 3   Apple      72434089              149.1182   148.270     148.99     149.8300
-    ## 4   Apple     104803028              146.8324   149.120     146.77     149.2100
-    ## 5   Apple     118931191              144.8875   144.810     144.98     146.9700
-    ## 6   Apple      56699475              145.8064   144.685     145.64     146.5500
-    ##   LowestPrice    Timestamp Transactions
-    ## 1      145.81 1.626926e+12       480209
-    ## 2      146.92 1.627013e+12       457247
-    ## 3      147.70 1.627272e+12       489114
-    ## 4      145.55 1.627358e+12       785621
-    ## 5      142.54 1.627445e+12       829463
-    ## 6      144.58 1.627531e+12       416123
+    ##   Company TradingVolumn VolumnWeightedAverage OpenPrice ClosePrice HighestPrice LowestPrice    Timestamp Transactions
+    ## 1   Apple      77287356              146.9910   145.935     146.80     148.1950      145.81 1.626926e+12       480209
+    ## 2   Apple      71447416              148.0368   147.550     148.56     148.7177      146.92 1.627013e+12       457247
+    ## 3   Apple      72434089              149.1182   148.270     148.99     149.8300      147.70 1.627272e+12       489114
+    ## 4   Apple     104803028              146.8324   149.120     146.77     149.2100      145.55 1.627358e+12       785621
+    ## 5   Apple     118931191              144.8875   144.810     144.98     146.9700      142.54 1.627445e+12       829463
+    ## 6   Apple      56699475              145.8064   144.685     145.64     146.5500      144.58 1.627531e+12       416123
 
 Plots You should pull data from at least two calls to your obtaining
 data function (possibly combining them into one) We have called the
@@ -220,7 +213,7 @@ table(wordcount_AAPL)
 
     ## wordcount_AAPL
     ## investing   markets      tech 
-    ##       132        67        67
+    ##       133        67        66
 
 ``` r
 table(wordcount_AMZN)
@@ -228,7 +221,7 @@ table(wordcount_AMZN)
 
     ## wordcount_AMZN
     ##  eurozone investing   markets      tech 
-    ##         1       188        61        25
+    ##         1       187        60        26
 
 ``` r
 table(wordcount_JPM)
@@ -236,7 +229,7 @@ table(wordcount_JPM)
 
     ## wordcount_JPM
     ##  eurozone investing   markets      tech 
-    ##         4       122        26         4
+    ##         4       120        26         4
 
 ``` r
 table(wordcount_WFC)
@@ -244,7 +237,7 @@ table(wordcount_WFC)
 
     ## wordcount_WFC
     ##  eurozone investing   markets      tech 
-    ##         3       129        28         3
+    ##         3       129        28         2
 
 It can be seen that there is a clear association between the keywords
 and company types. Two technical companies all includes keyword of
