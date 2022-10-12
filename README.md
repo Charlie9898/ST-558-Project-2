@@ -1,7 +1,7 @@
 Project2
 ================
 Chuanni He
-2022-10-03
+2022-10-12
 
 # Backgroun Information
 
@@ -18,7 +18,10 @@ following packages:
 strength is that it implements a bidirectional mapping between JSON data
 and the most important R data types.  
 \* `ggplot2`: A system for declaratively creating graphics, based on The
-Grammar of Graphics.
+Grammar of Graphics.  
+\* `tidyverse`: An opinionated collection of R packages designed for
+data science. All packages share an underlying design philosophy,
+grammar, and data structures.
 
 ``` r
 # Required library and key information
@@ -35,7 +38,7 @@ This section talks about how we define the functions to interact with
 the Financial API, as well as some helper functions working with data
 manipulation.
 
-`Aggregates`
+## `Aggregates`
 
 Our first function is to obtain the stock price for a stock over a given
 date range in custom time window sizes. This function interacts with the
@@ -75,7 +78,7 @@ Aggregates = function(ticker,multiplier, timespan) {
 }
 ```
 
-`GetNews`
+## `GetNews`
 
 The second function acquires the most recent news articles relating to a
 stock ticker. The summary of the article and the link to the original
@@ -109,7 +112,12 @@ GetNews = function(ticker, published, limit) {
 # Data Exploration
 
 Now that we can interact with a few of the endpoints of the Financial
-API, let’s get some data from them.  
+API, let’s get some data from them. Here, we defined the scope of this
+project to investigate two types of companies: technical companies and
+financial companies. The specific companies we will focus on are: \*
+Apple Inc. (`AAPL`) \* Amazon Inc. (`AMZN`) \* JPMorgan Chase & Co
+(`JPM`) \* Wells Fargo & Co (`WFC`)
+
 First, let’s pull the stock price of Apple Inc. (the ticker is `AAPL`)
 and Amazon.com Inc. (the ticker is `AMZN`) during 2021-7-22 and
 2022-7-22. We set the timeframe as 1 day (`multiplier=1`,
@@ -124,34 +132,55 @@ Price_Amazon = Aggregates("amzn", 1, "day")
 Price_Apple = data.frame(Company="Apple",Price_Apple)
 Price_Amazon = data.frame(Company="Amazon",Price_Amazon)
 Price = rbind(Price_Apple,Price_Amazon)
+
 head(Price)
 ```
 
-    ##   Company TradingVolumn VolumnWeightedAverage OpenPrice ClosePrice HighestPrice LowestPrice    Timestamp Transactions
-    ## 1   Apple      77287356              146.9910   145.935     146.80     148.1950      145.81 1.626926e+12       480209
-    ## 2   Apple      71447416              148.0368   147.550     148.56     148.7177      146.92 1.627013e+12       457247
-    ## 3   Apple      72434089              149.1182   148.270     148.99     149.8300      147.70 1.627272e+12       489114
-    ## 4   Apple     104803028              146.8324   149.120     146.77     149.2100      145.55 1.627358e+12       785621
-    ## 5   Apple     118931191              144.8875   144.810     144.98     146.9700      142.54 1.627445e+12       829463
-    ## 6   Apple      56699475              145.8064   144.685     145.64     146.5500      144.58 1.627531e+12       416123
+    ##   Company TradingVolumn VolumnWeightedAverage OpenPrice ClosePrice HighestPrice
+    ## 1   Apple      77287356              146.9910   145.935     146.80     148.1950
+    ## 2   Apple      71447416              148.0368   147.550     148.56     148.7177
+    ## 3   Apple      72434089              149.1182   148.270     148.99     149.8300
+    ## 4   Apple     104803028              146.8324   149.120     146.77     149.2100
+    ## 5   Apple     118931191              144.8875   144.810     144.98     146.9700
+    ## 6   Apple      56699475              145.8064   144.685     145.64     146.5500
+    ##   LowestPrice    Timestamp Transactions
+    ## 1      145.81 1.626926e+12       480209
+    ## 2      146.92 1.627013e+12       457247
+    ## 3      147.70 1.627272e+12       489114
+    ## 4      145.55 1.627358e+12       785621
+    ## 5      142.54 1.627445e+12       829463
+    ## 6      144.58 1.627531e+12       416123
 
-Plots You should pull data from at least two calls to your obtaining
-data function (possibly combining them into one) We have called the
-function twice to obtain the data for Apple and Amazon companies. We
-have then plotted the opening price for the stocks against the timestamp
-for doing various analysis like identifying the trends etc.
+# Exploratory Data Analysis
+
+## Trend for Openning Price
+
+We have called the function twice to obtain the data for Apple and
+Amazon companies. We have then plotted the opening price for the stocks
+against the timestamp for doing various analysis like identifying the
+trends etc.
 
 ``` r
 ggplot(data = Price, aes(x = Timestamp, y = OpenPrice)) +
 geom_line(aes(color = Company))
 ```
 
-![](C:\Users\hechu\OneDrive\Courses\ST558~1\Project\PROJEC~2\ST-558~1\README~1/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
-You should create at least one new variable that is a function of other
-variables : Here, we have created a new variable “PriceVariation” which
-is the difference between the highest and lowest price of the stocks of
-a company per day. This variation is then plotted against the timestamp
-and following graph is obtaine.
+![Open price for Amazon and
+Apple](C:\Users\hechu\OneDrive\Courses\ST558~1\Project\PROJEC~2\ST-558~1\README~1/figure-gfm/unnamed-chunk-5-1.png)
+
+From the plot above, we can found that there is a decreasing major trend
+for Amazon and a rising trend for Apple. In addition, the two companies
+share similar fluctuation trend in a small timeframe (can be interpreted
+as being impacted by the entire market). When there is a rising thrend,
+both of them tend to have a increasing pattern, and vise versa.
+
+## Creating New Variables
+
+Next, we have created a new variable `PriceVariation` which is the
+difference between the highest and lowest price of the stocks of a
+company per day. The new variable represents the fluctuation range of
+the corresponding company. This variation is then plotted against the
+timestamp and following graph is obtained.
 
 ``` r
 priceUpdated <- Price %>%
@@ -159,20 +188,102 @@ priceUpdated <- Price %>%
   mutate(PriceVariation = (HighestPrice-LowestPrice)) %>%
   arrange(desc(PriceVariation))
 
-ggplot(data = priceUpdated, aes(x = Timestamp, y = PriceVariation)) +
-  geom_col()
+ggplot(data = priceUpdated, aes(x = Timestamp, y = PriceVariation, color = "blue")) +
+  geom_col() + 
+  labs(title = "Plot for Price Variation vs Time")
 ```
 
-![](C:\Users\hechu\OneDrive\Courses\ST558~1\Project\PROJEC~2\ST-558~1\README~1/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![Plot for Price Variation vs
+Time](C:\Users\hechu\OneDrive\Courses\ST558~1\Project\PROJEC~2\ST-558~1\README~1/figure-gfm/unnamed-chunk-6-1.png)
+
+From the plot above, we can find that there is no clear pattern for the
+daily fluctuation for Apple Inc. However, in the past year, there is a
+minor increasing trend for the daily fluctuation, indicating that the
+stock for Apple is becoming more insteable.
+
+## Numerical Summaries for Categorical Variables
+
+Since we limited our scope of this project to focus on four companies,
+here for each company, we calculated the summary statistics for the
+`PriceVariation` of all the four companies.
 
 ``` r
-g <- ggplot(data = Price_Apple, aes(x = OpenPrice))
-g + geom_histogram()
+Price_JPMORGAN = Aggregates("jpm", 1, "day")
+Price_WELLSFARGO = Aggregates("wfc", 1, "day")
+Price_JPMORGAN = data.frame(Company="JPMorgan",Price_JPMORGAN)
+Price_WELLSFARGO = data.frame(Company="Wells Fargo",Price_WELLSFARGO)
+Price = rbind(Price,Price_JPMORGAN,Price_WELLSFARGO)
+
+priceNew <- Price %>%
+  mutate(PriceVariation = (HighestPrice-LowestPrice))
+
+Price_Summary = priceNew %>% group_by(Company) %>%
+                summarize("Min." = min(PriceVariation),
+                          "1st Quartile" = quantile(PriceVariation, 0.25, na.rm=TRUE),
+                          "Median" = quantile(PriceVariation, 0.5, na.rm=TRUE),
+                          "Mean" = mean(PriceVariation, na.rm=TRUE),
+                          "3rd Quartile" = quantile(PriceVariation, 0.75, na.rm=TRUE),
+                          "Max" = max(PriceVariation),
+                          "Std. Dev." = sd(PriceVariation, na.rm=TRUE))
+Price_Summary
 ```
 
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+    ## # A tibble: 4 × 8
+    ##   Company      Min. `1st Quartile` Median  Mean `3rd Quartile`   Max `Std. Dev.`
+    ##   <chr>       <dbl>          <dbl>  <dbl> <dbl>          <dbl> <dbl>       <dbl>
+    ## 1 Amazon      1.09           2.72    3.82  4.21           5.38 12.2        1.93 
+    ## 2 Apple       1.17           2.38    3.34  3.61           4.49 10.8        1.72 
+    ## 3 JPMorgan    1.33           2.21    2.85  3.08           3.72  6.90       1.08 
+    ## 4 Wells Fargo 0.485          0.999   1.19  1.32           1.57  3.78       0.533
 
-![](C:\Users\hechu\OneDrive\Courses\ST558~1\Project\PROJEC~2\ST-558~1\README~1/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+Wells Fargo has the least daily variation, indicating that the stock is
+very steable in a daily timeframe. Technical companies have overall
+higher daily fluctuation than financial companies.
+
+We also considered the Open Price and Close price variables and found
+out the mean, median, mode and IQR for both the variables. Using the
+group_by function, this data was obtained company wise. The table shows
+these values below :
+
+``` r
+Price_StatsOP <- Price %>%
+  group_by(Company) %>%
+  summarise(Avg_Open_Price = mean(OpenPrice), Std_dev = sd(OpenPrice), Median = median(OpenPrice), IQR = IQR(OpenPrice))
+
+Price_StatsCP <- Price %>%
+  group_by(Company) %>%
+  summarise(Avg_Close_Price = mean(ClosePrice), Std_dev = sd(ClosePrice), Median = median(ClosePrice), IQR = IQR(ClosePrice))
+
+  
+Price_StatsOP
+```
+
+    ## # A tibble: 4 × 5
+    ##   Company     Avg_Open_Price Std_dev Median   IQR
+    ##   <chr>                <dbl>   <dbl>  <dbl> <dbl>
+    ## 1 Amazon               163.    12.2   166.  14.0 
+    ## 2 Apple                159.    11.7   159.  21.5 
+    ## 3 JPMorgan             153.    13.5   157.  19.6 
+    ## 4 Wells Fargo           49.7    3.58   49.2  4.13
+
+``` r
+Price_StatsCP
+```
+
+    ## # A tibble: 4 × 5
+    ##   Company     Avg_Close_Price Std_dev Median   IQR
+    ##   <chr>                 <dbl>   <dbl>  <dbl> <dbl>
+    ## 1 Amazon                163.    12.5   165.  15.0 
+    ## 2 Apple                 160.    11.7   160.  21.5 
+    ## 3 JPMorgan              153.    13.4   157.  18.0 
+    ## 4 Wells Fargo            49.7    3.57   48.9  4.14
+
+Some findings can be concluded form the data above. First, Amazon has
+slightly higher open and close price than Apple. Both of them have
+almost the same standard deviation regarding the open and close price.
+In addition, Apple has significantly higher IQR than Amazon.
+
+## Contingency Tables
 
 Next, let’s create some contingency tables to summarize the key words
 for different types of companies in the news. We are interested in the
@@ -213,7 +324,7 @@ table(wordcount_AAPL)
 
     ## wordcount_AAPL
     ## investing   markets      tech 
-    ##       133        67        66
+    ##       134        62        69
 
 ``` r
 table(wordcount_AMZN)
@@ -221,7 +332,7 @@ table(wordcount_AMZN)
 
     ## wordcount_AMZN
     ##  eurozone investing   markets      tech 
-    ##         1       187        60        26
+    ##         1       190        60        26
 
 ``` r
 table(wordcount_JPM)
@@ -229,7 +340,7 @@ table(wordcount_JPM)
 
     ## wordcount_JPM
     ##  eurozone investing   markets      tech 
-    ##         4       120        26         4
+    ##         4       118        27         4
 
 ``` r
 table(wordcount_WFC)
@@ -237,10 +348,90 @@ table(wordcount_WFC)
 
     ## wordcount_WFC
     ##  eurozone investing   markets      tech 
-    ##         3       129        28         2
+    ##         3       129        29         2
 
 It can be seen that there is a clear association between the keywords
 and company types. Two technical companies all includes keyword of
 `tech`, while either of the financial companies has fewer frequency of
 `tech`. On the other hand, financial terminology such as `eurozone` has
 higher frequencies in financial companies.
+
+## Investigating the Keyword Count for Different Companies
+
+In this plot, we have first converted the `wordcount_AAPL` list to a
+tibble and then, plotted the keywords present in the table according to
+their values.
+
+``` r
+df_temp <- as_tibble(wordcount_AAPL)
+ggplot(data = df_temp, aes(x = value)) +
+  geom_bar(fill="blue") + 
+  labs(x = "Apple", title = "Bar plot for Apple data")
+```
+
+![Bar plot for Apple
+data](C:\Users\hechu\OneDrive\Courses\ST558~1\Project\PROJEC~2\ST-558~1\README~1/figure-gfm/unnamed-chunk-11-1.png)
+
+It can be found that `investing` is a high frequency word over Apple,
+indicating that the news are potentially focusing on financial
+investment analysis or suggestions, etc.
+
+We also made a box plot to reveal the closing price for Amazon and
+Apple.
+
+``` r
+ggplot(data = Price, aes(x = Company, y = ClosePrice)) +
+  geom_boxplot(fill = "grey")+
+  labs(y = "Close Price", title = "Box Plot for Closing Price" )
+```
+
+![Box Plot for Closing
+Price](C:\Users\hechu\OneDrive\Courses\ST558~1\Project\PROJEC~2\ST-558~1\README~1/figure-gfm/unnamed-chunk-12-1.png)
+
+As identified in the data summary, Amazon has slightly higher average
+close price than Apple, while Apple has higher IQR than Amazon.
+
+The scatter plot was also developed to investigate the relationship
+between open price and closing price. We plotted the `OpenPrice` and
+`ClosePrice` for a company against each other. Using the facet_wrap()
+function, we can see the subplots for 2 companies.
+
+``` r
+ggplot(data = Price, aes(x = OpenPrice, y = ClosePrice)) +
+  geom_point(color = "blue") +
+  labs(x = "Open Price" , y = "Close Price", title = "Scatter Plot : Open Price Vs Close Price") +
+  facet_wrap(~ Company)
+```
+
+![Scatter Plot : Open Price Vs Close
+Price](C:\Users\hechu\OneDrive\Courses\ST558~1\Project\PROJEC~2\ST-558~1\README~1/figure-gfm/unnamed-chunk-13-1.png)
+
+There is a very strong linear relationship between open price and close
+price for both companies. We can assume that the overall trend of the
+stock market have a dominant effect over the company, rather than the
+daily fluctuation.
+
+Finally, the histogram of the Transactions for Amazon stocks is
+developed as well.
+
+``` r
+ggplot(data = Price_Amazon, aes(x= Transactions)) +
+  geom_histogram(fill="lightblue", color="black", size = 5, binwidth = 10000)+
+  labs(title = "Histogram for Transactions - Amazon")
+```
+
+![Histogram for Transactions -
+Amazon](C:\Users\hechu\OneDrive\Courses\ST558~1\Project\PROJEC~2\ST-558~1\README~1/figure-gfm/unnamed-chunk-14-1.png)
+
+The daily transaction has a bell curve distribution with a long tail.
+Most of the daily transaction falls in the range between (0, 250,000).
+
+# Wrap-Up
+
+In this vignette, we developed several functions to extract stock market
+data from the Financial Data API. We accessed the stock price and news
+data for Apple, Amazon, JPMorgan, and Wells Fargo company, then
+performed some basic EDA to explore some patterns. There are some
+initial findings. For example, we found that financial companies have a
+more stable stock price than technical companies. While Technical
+companies have more exposure in press than financial companies.
