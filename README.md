@@ -166,7 +166,7 @@ geom_line(aes(color = Company))
 ```
 
 ![Open price for Amazon and
-Apple](C:\Users\hechu\OneDrive\Courses\ST558~1\Project\PROJEC~2\ST-558~1\README~1/figure-gfm/unnamed-chunk-5-1.png)
+Apple](https://github.com/Charlie9898/ST-558-Project-2/blob/main/README_files/figure-gfm/unnamed-chunk-5-1.png)
 
 From the plot above, we can found that there is a decreasing major trend
 for Amazon and a rising trend for Apple. In addition, the two companies
@@ -194,7 +194,7 @@ ggplot(data = priceUpdated, aes(x = Timestamp, y = PriceVariation, color = "blue
 ```
 
 ![Plot for Price Variation vs
-Time](C:\Users\hechu\OneDrive\Courses\ST558~1\Project\PROJEC~2\ST-558~1\README~1/figure-gfm/unnamed-chunk-6-1.png)
+Time](https://github.com/Charlie9898/ST-558-Project-2/blob/main/README_files/figure-gfm/unnamed-chunk-6-1.png)
 
 From the plot above, we can find that there is no clear pattern for the
 daily fluctuation for Apple Inc. However, in the past year, there is a
@@ -370,7 +370,7 @@ ggplot(data = df_temp, aes(x = value)) +
 ```
 
 ![Bar plot for Apple
-data](C:\Users\hechu\OneDrive\Courses\ST558~1\Project\PROJEC~2\ST-558~1\README~1/figure-gfm/unnamed-chunk-11-1.png)
+data](https://github.com/Charlie9898/ST-558-Project-2/blob/main/README_files/figure-gfm/unnamed-chunk-11-1.png)
 
 It can be found that `investing` is a high frequency word over Apple,
 indicating that the news are potentially focusing on financial
@@ -386,7 +386,7 @@ ggplot(data = Price, aes(x = Company, y = ClosePrice)) +
 ```
 
 ![Box Plot for Closing
-Price](C:\Users\hechu\OneDrive\Courses\ST558~1\Project\PROJEC~2\ST-558~1\README~1/figure-gfm/unnamed-chunk-12-1.png)
+Price](https://github.com/Charlie9898/ST-558-Project-2/blob/main/README_files/figure-gfm/unnamed-chunk-12-1.png)
 
 As identified in the data summary, Amazon has slightly higher average
 close price than Apple, while Apple has higher IQR than Amazon.
@@ -404,7 +404,7 @@ ggplot(data = Price, aes(x = OpenPrice, y = ClosePrice)) +
 ```
 
 ![Scatter Plot : Open Price Vs Close
-Price](C:\Users\hechu\OneDrive\Courses\ST558~1\Project\PROJEC~2\ST-558~1\README~1/figure-gfm/unnamed-chunk-13-1.png)
+Price](https://github.com/Charlie9898/ST-558-Project-2/blob/main/README_files/figure-gfm/unnamed-chunk-13-1.png)
 
 There is a very strong linear relationship between open price and close
 price for both companies. We can assume that the overall trend of the
@@ -421,7 +421,7 @@ ggplot(data = Price_Amazon, aes(x= Transactions)) +
 ```
 
 ![Histogram for Transactions -
-Amazon](C:\Users\hechu\OneDrive\Courses\ST558~1\Project\PROJEC~2\ST-558~1\README~1/figure-gfm/unnamed-chunk-14-1.png)
+Amazon](https://github.com/Charlie9898/ST-558-Project-2/blob/main/README_files/figure-gfm/unnamed-chunk-14-1.png)
 
 The daily transaction has a bell curve distribution with a long tail.
 Most of the daily transaction falls in the range between (0, 250,000).
