@@ -1,9 +1,9 @@
 Project2
 ================
-Chuanni He
+Chuanni He & Aniket Anil Walimbe
 2022-10-12
 
-# Backgroun Information
+# Background Information
 
 This project is prepared by Aniket Anil Walimbe and Chuanni He. It
 created a vignette for reading and summarizing data from one of the

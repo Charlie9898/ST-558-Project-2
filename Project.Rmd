@@ -1,10 +1,10 @@
 ---
 title: "Project2"
-author: "Chuanni He"
+author: "Chuanni He & Aniket Anil Walimbe"
 date: "2022-10-12"
 ---
 
-# Backgroun Information
+# Background Information
 This project is prepared by Aniket Anil Walimbe and Chuanni He. It created a vignette  for reading and summarizing data from one of the [Financial data API](https://polygon.io/docs/getting-started). 
 
 # Requirements
